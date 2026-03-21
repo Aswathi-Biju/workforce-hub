@@ -1,0 +1,59 @@
+/*
+ * custom.css — WorkForce Hub supplemental styles
+ * Loaded after Bootstrap for fine-tuned overrides.
+ */
+
+/* ── Smooth page transitions ── */
+.main-content { animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Card hover lift ── */
+.card-lift { transition: transform .2s ease, box-shadow .2s ease; }
+.card-lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1) !important; }
+
+/* ── Table row highlight ── */
+.table-hover tbody tr { transition: background .15s; }
+
+/* ── Sidebar scroll bar ── */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
+
+/* ── Button loading state ── */
+.btn-loading { position: relative; pointer-events: none; }
+.btn-loading::after {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    width: 14px; height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Status badge pulse for NEW ── */
+.badge-new { animation: pulse-red 2s infinite; }
+@keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.4); }
+    50%       { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+
+/* ── Input focus ring ── */
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+
+/* ── Responsive table on mobile ── */
+@media (max-width: 576px) {
+    .table th, .table td { white-space: nowrap; }
+}
+
+/* ── Print styles ── */
+@media print {
+    .sidebar, .topbar, .btn, .modal { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+}

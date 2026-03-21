@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block page_title %}<i class="bi bi-house-fill me-2 text-primary"></i>My Dashboard{% endblock %}
+
+{% block content %}
+
+{% if new_count and new_count > 0 %}
+<!-- Notification Banner -->
+<div class="alert border-0 mb-4 d-flex align-items-center gap-3"
+     style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-left:4px solid #2563eb !important;border-radius:12px;">
+    <div style="width:40px;height:40px;background:#2563eb;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-bell-fill text-white"></i>
+    </div>
+    <div>
+        <div class="fw-700" style="font-weight:700;color:#1e40af;">
+            🎉 You have {{ new_count }} new project assignment{{ 's' if new_count > 1 else '' }}!
+        </div>
+        <div style="font-size:.82rem;color:#3b82f6;">Scroll down to see your newly assigned project{{ 's' if new_count > 1 else '' }}.</div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Welcome + Profile Card -->
+<div class="row g-3 mb-4">
+    {% if employee %}
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge-fill text-primary"></i> My Profile
+            </div>
+            <div class="card-body text-center p-4">
+                <!-- Avatar -->
+                <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center fw-800"
+                     style="width:72px;height:72px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;font-size:1.8rem;font-weight:800;">
+                    {{ employee.name[0]|upper }}
+                </div>
+                <h5 class="fw-700 mb-0" style="font-weight:700;">{{ employee.name }}</h5>
+                <p class="text-muted mb-3" style="font-size:.83rem;">{{ employee.role }}</p>
+
+                <div class="text-start">
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted" style="font-size:.82rem;"><i class="bi bi-hash me-1"></i>Employee ID</span>
+                        <span class="fw-600" style="font-size:.82rem;font-weight:600;">{{ employee.employee_id }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted" style="font-size:.82rem;"><i class="bi bi-building me-1"></i>Department</span>
+                        <span class="fw-600" style="font-size:.82rem;font-weight:600;">{{ employee.department }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted" style="font-size:.82rem;"><i class="bi bi-briefcase me-1"></i>Role</span>
+                        <span class="fw-600" style="font-size:.82rem;font-weight:600;">{{ employee.role }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-muted" style="font-size:.82rem;"><i class="bi bi-currency-dollar me-1"></i>Salary</span>
+                        <span class="fw-700 text-success" style="font-size:.88rem;font-weight:700;">
+                            ₹{{ "{:,.0f}".format(employee.salary) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="col-12 col-lg-8">
+        <div class="row g-3 mb-3">
+            <div class="col-6">
+                <div class="card stat-card bg-white">
+                    <div class="stat-icon" style="background:#eff6ff;">
+                        <i class="bi bi-kanban-fill text-primary fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value text-primary">{{ projects|length }}</div>
+                        <div class="stat-label">Total Projects</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card stat-card bg-white">
+                    <div class="stat-icon" style="background:#f0fdf4;">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value text-success">
+                            {{ projects|selectattr('status','eq','Completed')|list|length }}
+                        </div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Projects -->
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history text-primary"></i> Recent Projects
+            </div>
+            <div class="card-body p-0">
+                {% if projects %}
+                <div class="list-group list-group-flush">
+                    {% for project in projects[:4] %}
+                    <div class="list-group-item px-3 py-2 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            {% if project.is_new %}
+                            <span class="badge-status badge-new">NEW</span>
+                            {% endif %}
+                            <div>
+                                <div class="fw-600" style="font-size:.85rem;font-weight:600;">{{ project.project_name }}</div>
+                                <div class="text-muted" style="font-size:.75rem;">
+                                    {{ project.description[:50] }}{% if project.description|length > 50 %}...{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge-status {% if project.status == 'Completed' %}badge-completed{% else %}badge-ongoing{% endif %}">
+                            {{ project.status }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>No projects assigned yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- No employee profile found -->
+    <div class="col-12">
+        <div class="card border-warning">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-exclamation-triangle-fill text-warning fs-1 d-block mb-3"></i>
+                <h5 class="fw-700">Employee Profile Not Found</h5>
+                <p class="text-muted">Your profile hasn't been set up yet. Please contact HR.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- All Projects Table -->
+{% if projects %}
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <span><i class="bi bi-kanban-fill me-2 text-primary"></i>My Projects</span>
+        <span class="badge bg-primary rounded-pill">{{ projects|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-3">#</th>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Assigned On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td class="ps-3 text-muted">{{ loop.index }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                {% if project.is_new %}
+                                    <span class="badge-status badge-new">NEW</span>
+                                {% endif %}
+                                <span class="fw-600" style="font-weight:600;">{{ project.project_name }}</span>
+                            </div>
+                        </td>
+                        <td class="text-muted" style="max-width:250px;">
+                            {{ project.description[:80] }}{% if project.description|length > 80 %}...{% endif %}
+                        </td>
+                        <td>
+                            <span class="badge-status {% if project.status == 'Completed' %}badge-completed{% else %}badge-ongoing{% endif %}">
+                                {{ project.status }}
+                            </span>
+                        </td>
+                        <td class="text-muted" style="font-size:.8rem;">
+                            {% if project.assigned_at %}
+                                {{ project.assigned_at.strftime('%d %b %Y') }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

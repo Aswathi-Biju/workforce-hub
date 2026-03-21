@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}HR Dashboard{% endblock %}
+{% block page_title %}<i class="bi bi-speedometer2 me-2 text-primary"></i>HR Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h4 class="fw-800 mb-1" style="font-weight:800;">Welcome back, {{ current_user.name }}! 👋</h4>
+        <p class="text-muted mb-0" style="font-size:.85rem;">Here's what's happening at WorkForce Hub today.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('employee.add_employee') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus me-1"></i>Add Employee
+        </a>
+        <a href="{{ url_for('project.add_project') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-plus-square me-1"></i>New Project
+        </a>
+    </div>
+</div>
+
+<!-- Stat Cards Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card bg-white">
+            <div class="stat-icon" style="background:#eff6ff;">
+                <i class="bi bi-people-fill text-primary fs-4"></i>
+            </div>
+            <div>
+                <div class="stat-value text-primary">{{ total_employees }}</div>
+                <div class="stat-label">Total Employees</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card bg-white">
+            <div class="stat-icon" style="background:#f0fdf4;">
+                <i class="bi bi-kanban-fill text-success fs-4"></i>
+            </div>
+            <div>
+                <div class="stat-value text-success">{{ total_projects }}</div>
+                <div class="stat-label">Total Projects</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card bg-white">
+            <div class="stat-icon" style="background:#fefce8;">
+                <i class="bi bi-arrow-repeat text-warning fs-4"></i>
+            </div>
+            <div>
+                <div class="stat-value text-warning">
+                    {% for s in proj_stats %}{% if s._id == 'Ongoing' %}{{ s.count }}{% endif %}{% endfor %}
+                </div>
+                <div class="stat-label">Ongoing Projects</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card stat-card bg-white">
+            <div class="stat-icon" style="background:#fdf4ff;">
+                <i class="bi bi-building text-purple fs-4" style="color:#7c3aed;"></i>
+            </div>
+            <div>
+                <div class="stat-value" style="color:#7c3aed;">{{ dept_stats|length }}</div>
+                <div class="stat-label">Departments</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-3 mb-4">
+    <!-- Employees by Department -->
+    <div class="col-12 col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-bar-chart-fill text-primary"></i>
+                Employees by Department
+            </div>
+            <div class="card-body p-3">
+                {% if dept_stats %}
+                    {% set max_count = dept_stats[0].count %}
+                    {% for dept in dept_stats %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span style="font-size:.83rem;font-weight:600;">{{ dept._id or 'Unassigned' }}</span>
+                            <span class="badge bg-primary rounded-pill">{{ dept.count }}</span>
+                        </div>
+                        <div class="progress" style="height:8px;border-radius:20px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width:{{ (dept.count / max_count * 100)|int }}%;border-radius:20px;"
+                                 aria-valuenow="{{ dept.count }}" aria-valuemin="0" aria-valuemax="{{ max_count }}">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>No employee data yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects by Status -->
+    <div class="col-12 col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-pie-chart-fill text-success"></i>
+                Projects by Status
+            </div>
+            <div class="card-body p-3">
+                {% if proj_stats %}
+                    <div class="row g-3 mb-3">
+                        {% for stat in proj_stats %}
+                        <div class="col-6">
+                            <div class="text-center p-3 rounded-3"
+                                 style="background:{% if stat._id == 'Completed' %}#d1fae5{% else %}#fef3c7{% endif %};">
+                                <div class="fw-800 mb-1" style="font-size:2rem;font-weight:800;color:{% if stat._id == 'Completed' %}#065f46{% else %}#92400e{% endif %};">
+                                    {{ stat.count }}
+                                </div>
+                                <div style="font-size:.78rem;font-weight:600;color:{% if stat._id == 'Completed' %}#065f46{% else %}#92400e{% endif %};">
+                                    {{ stat._id }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Visual bar -->
+                    {% if total_projects > 0 %}
+                    <div class="d-flex rounded-3 overflow-hidden" style="height:12px;">
+                        {% for stat in proj_stats %}
+                        <div style="width:{{ (stat.count / total_projects * 100)|int }}%;background:{% if stat._id == 'Completed' %}#10b981{% else %}#f59e0b{% endif %};"></div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex gap-3 mt-2">
+                        {% for stat in proj_stats %}
+                        <div class="d-flex align-items-center gap-1">
+                            <div style="width:10px;height:10px;border-radius:50%;background:{% if stat._id == 'Completed' %}#10b981{% else %}#f59e0b{% endif %};"></div>
+                            <span style="font-size:.75rem;color:#64748b;">{{ stat._id }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>No project data yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Links -->
+<div class="row g-3">
+    <div class="col-12 col-md-6">
+        <a href="{{ url_for('employee.employees') }}" class="card text-decoration-none" style="transition:transform .2s;">
+            <div class="card-body d-flex align-items-center gap-3 p-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center"
+                     style="width:44px;height:44px;background:#eff6ff;font-size:1.3rem;">
+                    <i class="bi bi-person-lines-fill text-primary"></i>
+                </div>
+                <div>
+                    <div class="fw-600" style="font-weight:600;">Manage Employees</div>
+                    <div class="text-muted" style="font-size:.78rem;">View, edit, and delete employee records</div>
+                </div>
+                <i class="bi bi-chevron-right ms-auto text-muted"></i>
+            </div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6">
+        <a href="{{ url_for('project.projects') }}" class="card text-decoration-none">
+            <div class="card-body d-flex align-items-center gap-3 p-3">
+                <div class="rounded-3 d-flex align-items-center justify-content-center"
+                     style="width:44px;height:44px;background:#f0fdf4;font-size:1.3rem;">
+                    <i class="bi bi-kanban-fill text-success"></i>
+                </div>
+                <div>
+                    <div class="fw-600" style="font-weight:600;">Manage Projects</div>
+                    <div class="text-muted" style="font-size:.78rem;">Track and update all project assignments</div>
+                </div>
+                <i class="bi bi-chevron-right ms-auto text-muted"></i>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

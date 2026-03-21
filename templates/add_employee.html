@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Add Employee{% endblock %}
+{% block page_title %}<i class="bi bi-person-plus-fill me-2 text-primary"></i>Add New Employee{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a href="{{ url_for('employee.employees') }}" class="btn btn-sm btn-light">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+            <div>
+                <h4 class="fw-800 mb-0" style="font-weight:800;">Add New Employee</h4>
+                <p class="text-muted mb-0" style="font-size:.83rem;">Fill in the details to add an employee and create their login account.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge-fill text-primary"></i>Employee Information
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('employee.add_employee') }}">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. John Smith" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" name="email" class="form-control" placeholder="john@company.com" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Department *</label>
+                            <select name="department" class="form-select" required>
+                                <option value="" disabled selected>Select department</option>
+                                <option>Engineering</option>
+                                <option>Design</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                                <option>Customer Support</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Job Role *</label>
+                            <input type="text" name="role" class="form-control" placeholder="e.g. Software Engineer" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Monthly Salary (₹) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" name="salary" class="form-control" placeholder="50000" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-3">
+                    <p class="fw-600 mb-3" style="font-size:.85rem;font-weight:600;color:#64748b;">
+                        <i class="bi bi-shield-lock me-1"></i>Login Credentials (for employee portal access)
+                    </p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Login Email *</label>
+                            <input type="email" name="email" class="form-control" style="display:none;">
+                            <p class="form-control bg-light text-muted mb-0" style="font-size:.83rem;">Same as email above</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Password *</label>
+                            <input type="password" name="password" class="form-control" placeholder="Min. 6 characters" required minlength="6">
+                            <div class="form-text">The employee will use this to log into WorkForce Hub.</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-person-plus-fill me-1"></i>Add Employee
+                        </button>
+                        <a href="{{ url_for('employee.employees') }}" class="btn btn-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

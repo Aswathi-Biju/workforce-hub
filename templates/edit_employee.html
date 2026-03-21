@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Edit Employee{% endblock %}
+{% block page_title %}<i class="bi bi-pencil-fill me-2 text-primary"></i>Edit Employee{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <a href="{{ url_for('employee.employees') }}" class="btn btn-sm btn-light">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+            <div>
+                <h4 class="fw-800 mb-0" style="font-weight:800;">Edit Employee</h4>
+                <p class="text-muted mb-0" style="font-size:.83rem;">Update details for {{ employee.name }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge-fill text-primary"></i>
+                Edit: <strong class="ms-1">{{ employee.name }}</strong>
+                <code class="ms-auto" style="font-size:.75rem;background:#f1f5f9;padding:2px 8px;border-radius:5px;">
+                    {{ employee.employee_id }}
+                </code>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('employee.edit_employee', employee_id=employee.employee_id) }}">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" name="name" class="form-control" value="{{ employee.name }}" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Department *</label>
+                            <select name="department" class="form-select" required>
+                                {% for dept in ['Engineering','Design','Marketing','Sales','HR','Finance','Operations','Customer Support'] %}
+                                <option value="{{ dept }}" {% if employee.department == dept %}selected{% endif %}>{{ dept }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Job Role *</label>
+                            <input type="text" name="role" class="form-control" value="{{ employee.role }}" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Monthly Salary (₹) *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" name="salary" class="form-control" value="{{ employee.salary|int }}" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-lg me-1"></i>Save Changes
+                        </button>
+                        <a href="{{ url_for('employee.employees') }}" class="btn btn-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
