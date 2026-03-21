@@ -1,10 +1,11 @@
 from flask import Flask, render_template
 from flask_pymongo import PyMongo
 from flask_login import LoginManager
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'workforce-hub-secret-key-123'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/workforce_hub'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'workforce-hub-secret-key-123')
+app.config['MONGO_URI'] = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/workforce_hub')
 
 mongo = PyMongo(app)
 login_manager = LoginManager(app)
@@ -34,4 +35,4 @@ def server_error(error):
     return render_template('errors/500.html'), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
