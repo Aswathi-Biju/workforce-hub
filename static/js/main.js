@@ -94,3 +94,26 @@ document.addEventListener('DOMContentLoaded', function () {
         new bootstrap.Tooltip(el);
     });
 });
+
+
+// ── Dark Mode ──
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const icon = document.getElementById('darkModeIcon');
+    if (document.body.classList.contains('dark-mode')) {
+        icon.className = 'bi bi-sun-fill';
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        icon.className = 'bi bi-moon-fill';
+        localStorage.setItem('darkMode', 'disabled');
+    }
+}
+
+// Remember dark mode on page load
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    window.addEventListener('DOMContentLoaded', function() {
+        const icon = document.getElementById('darkModeIcon');
+        if (icon) icon.className = 'bi bi-sun-fill';
+    });
+}

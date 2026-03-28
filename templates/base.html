@@ -36,7 +36,7 @@
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; }
 
-        /* ── Sidebar ── */
+        /* Sidebar */
         .sidebar {
             position: fixed; top: 0; left: 0;
             width: 260px; height: 100vh;
@@ -114,7 +114,7 @@
             padding: 1px 7px; border-radius: 20px; display: inline-block; margin-top: 1px;
         }
 
-        /* ── Main Content ── */
+        /* Main Content */
         .main-content {
             margin-left: 260px;
             min-height: 100vh;
@@ -131,7 +131,7 @@
         .topbar-actions { display: flex; align-items: center; gap: .75rem; }
         .content-area { padding: 1.75rem 2rem; }
 
-        /* ── Cards ── */
+        /* Cards */
         .card {
             border: 1px solid var(--border);
             border-radius: 14px;
@@ -155,13 +155,13 @@
         .stat-value { font-size: 2rem; font-weight: 800; line-height: 1; }
         .stat-label { font-size: .8rem; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
 
-        /* ── Tables ── */
+        /* Tables */
         .table th { font-size: .78rem; font-weight: 600; text-transform: uppercase;
             letter-spacing: .5px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
         .table td { vertical-align: middle; font-size: .88rem; }
         .table-hover tbody tr:hover { background: var(--primary-light); }
 
-        /* ── Badges ── */
+        /* Badges */
         .badge-status {
             padding: .28rem .7rem; border-radius: 20px;
             font-size: .73rem; font-weight: 600;
@@ -172,12 +172,12 @@
         .badge-hr { background: #ede9fe; color: #5b21b6; }
         .badge-employee { background: #dbeafe; color: #1e40af; }
 
-        /* ── Buttons ── */
+        /* Buttons */
         .btn-primary { background: var(--primary); border-color: var(--primary); font-weight: 600; }
         .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
         .btn-sm { font-size: .78rem; padding: .3rem .65rem; border-radius: 7px; }
 
-        /* ── Forms ── */
+        /* Forms */
         .form-control, .form-select {
             border-radius: 9px; border: 1px solid var(--border);
             font-size: .88rem; padding: .6rem .85rem;
@@ -187,10 +187,10 @@
         }
         .form-label { font-size: .83rem; font-weight: 600; color: var(--text); margin-bottom: .35rem; }
 
-        /* ── Flash messages ── */
+        /* Flash messages */
         .alert { border-radius: 10px; font-size: .88rem; font-weight: 500; }
 
-        /* ── Notification badge ── */
+        /* Notification badge */
         .notif-badge {
             position: absolute; top: -4px; right: -6px;
             background: var(--danger); color: white;
@@ -200,7 +200,7 @@
             font-weight: 700;
         }
 
-        /* ── Responsive ── */
+        /* Responsive */
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -216,7 +216,7 @@
 <body>
 
 {% if current_user.is_authenticated %}
-<!-- ===== SIDEBAR ===== -->
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
         <div class="d-flex align-items-center">
@@ -232,20 +232,18 @@
             <a href="{{ url_for('employee.hr_dashboard') }}" class="nav-link {% if request.endpoint == 'employee.hr_dashboard' %}active{% endif %}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-
             <div class="sidebar-section">People</div>
-            <a href="{{ url_for('employee.employees') }}" class="nav-link {% if 'employee' in request.endpoint and request.endpoint != 'employee.hr_dashboard' and request.endpoint != 'employee.employee_dashboard' %}active{% endif %}">
+            <a href="{{ url_for('employee.employees') }}" class="nav-link {% if request.endpoint == 'employee.employees' %}active{% endif %}">
                 <i class="bi bi-person-lines-fill"></i> Employees
             </a>
-            <a href="{{ url_for('employee.add_employee') }}" class="nav-link">
+            <a href="{{ url_for('employee.add_employee') }}" class="nav-link {% if request.endpoint == 'employee.add_employee' %}active{% endif %}">
                 <i class="bi bi-person-plus-fill"></i> Add Employee
             </a>
-
             <div class="sidebar-section">Projects</div>
             <a href="{{ url_for('project.projects') }}" class="nav-link {% if request.endpoint == 'project.projects' %}active{% endif %}">
                 <i class="bi bi-kanban-fill"></i> All Projects
             </a>
-            <a href="{{ url_for('project.add_project') }}" class="nav-link">
+            <a href="{{ url_for('project.add_project') }}" class="nav-link {% if request.endpoint == 'project.add_project' %}active{% endif %}">
                 <i class="bi bi-plus-square-fill"></i> Assign Project
             </a>
         {% else %}
@@ -270,7 +268,7 @@
     </div>
 </aside>
 
-<!-- ===== MAIN CONTENT ===== -->
+<!-- MAIN CONTENT -->
 <div class="main-content">
     <div class="topbar">
         <div class="d-flex align-items-center gap-2">
@@ -280,6 +278,11 @@
             <span class="topbar-title">{% block page_title %}WorkForce Hub{% endblock %}</span>
         </div>
         <div class="topbar-actions">
+            <!-- Dark Mode Toggle -->
+            <button onclick="toggleDarkMode()" id="darkModeBtn"
+                    class="btn btn-sm btn-light" title="Toggle Dark Mode">
+                <i class="bi bi-moon-fill" id="darkModeIcon"></i>
+            </button>
             <span class="text-muted" style="font-size:.82rem;">
                 <i class="bi bi-person-circle me-1"></i>{{ current_user.name }}
             </span>
@@ -287,7 +290,6 @@
     </div>
 
     <div class="content-area">
-        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -305,7 +307,6 @@
 </div>
 
 {% else %}
-<!-- Non-authenticated pages (login) -->
 <div>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -332,16 +333,13 @@
 </script>
 <!-- Custom JS -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- PWA Service Worker -->
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('/static/service-worker.js')
-        .then(function(reg) {
-          console.log('SW registered!', reg);
-        })
-        .catch(function(err) {
-          console.log('SW failed:', err);
-        });
+        .then(function(reg) { console.log('SW registered!', reg); })
+        .catch(function(err) { console.log('SW failed:', err); });
     });
   }
 </script>

@@ -57,3 +57,26 @@
     .sidebar, .topbar, .btn, .modal { display: none !important; }
     .main-content { margin-left: 0 !important; }
 }
+
+
+
+/* ── Dark Mode ── */
+body.dark-mode {
+    background: #0f172a !important;
+    color: #e2e8f0 !important;
+}
+body.dark-mode .card { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .card-header { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+body.dark-mode .topbar { background: #1e293b !important; border-color: #334155 !important; }
+body.dark-mode .topbar-title { color: #e2e8f0 !important; }
+body.dark-mode .table { color: #e2e8f0 !important; }
+body.dark-mode .table th { color: #94a3b8 !important; border-color: #334155 !important; }
+body.dark-mode .table td { border-color: #334155 !important; }
+body.dark-mode .table-hover tbody tr:hover { background: #334155 !important; }
+body.dark-mode .form-control, body.dark-mode .form-select { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+body.dark-mode .btn-light { background: #334155 !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+body.dark-mode .input-group-text { background: #1e293b !important; border-color: #334155 !important; color: #94a3b8 !important; }
+body.dark-mode .modal-content { background: #1e293b !important; color: #e2e8f0 !important; }
+body.dark-mode .list-group-item { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+body.dark-mode .content-area { background: #0f172a !important; }
+body.dark-mode .text-muted { color: #94a3b8 !important; }
